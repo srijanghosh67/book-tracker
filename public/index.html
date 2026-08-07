@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Book Tracker</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="screen">
+    <div class="auth-card">
+      <div class="logo">
+        <span class="logo-icon">📚</span>
+        <h1>My Book Tracker</h1>
+        <p class="tagline">Your private reading journal</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="tab active" data-tab="login">Login</button>
+        <button class="tab" data-tab="register">Register</button>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="login-username">Username or Email</label>
+          <input type="text" id="login-username" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+        <p id="login-error" class="error-msg"></p>
+      </form>
+
+      <form id="register-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="reg-username">Username</label>
+          <input type="text" id="reg-username" required minlength="3" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" required minlength="6" autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+        <p id="register-error" class="error-msg"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app-screen" class="screen hidden">
+    <header class="app-header">
+      <div class="header-left">
+        <span class="logo-icon">📚</span>
+        <h1>My Book Tracker</h1>
+      </div>
+      <div class="header-right">
+        <span id="welcome-user"></span>
+        <button id="btn-logout" class="btn btn-ghost">Logout</button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="stats-bar" id="stats-bar">
+      <div class="stat-card">
+        <span class="stat-value" id="stat-total">0</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-read">0</span>
+        <span class="stat-label">Read</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-reading">0</span>
+        <span class="stat-label">Reading</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-want">0</span>
+        <span class="stat-label">Want to Read</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-rating">–</span>
+        <span class="stat-label">Avg Rating</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-pages">0</span>
+        <span class="stat-label">Pages</span>
+      </div>
+    </section>
+
+    <!-- Toolbar -->
+    <section class="toolbar">
+      <div class="search-box">
+        <input type="search" id="search-input" placeholder="Search title, author, genre, review…" />
+      </div>
+      <div class="filters">
+        <select id="filter-status">
+          <option value="">All statuses</option>
+          <option value="want_to_read">Want to Read</option>
+          <option value="reading">Currently Reading</option>
+          <option value="read">Finished</option>
+        </select>
+        <select id="sort-by">
+          <option value="updated">Recently Updated</option>
+          <option value="title">Title A–Z</option>
+          <option value="author">Author A–Z</option>
+          <option value="rating">Highest Rating</option>
+          <option value="date_finished">Date Finished</option>
+        </select>
+      </div>
+      <button id="btn-add-book" class="btn btn-primary">+ Add Book</button>
+    </section>
+
+    <!-- Book list -->
+    <main class="book-list" id="book-list">
+      <!-- Cards injected by JS -->
+    </main>
+
+    <div id="empty-state" class="empty-state hidden">
+      <p>No books yet. Add your first one!</p>
+      <button class="btn btn-primary" onclick="document.getElementById('btn-add-book').click()">+ Add Book</button>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <div id="book-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Add Book</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="book-form">
+        <input type="hidden" id="book-id" />
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="book-title">Title *</label>
+            <input type="text" id="book-title" required />
+          </div>
+          <div class="form-group flex-2">
+            <label for="book-author">Author *</label>
+            <input type="text" id="book-author" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="book-genre">Genre</label>
+            <input type="text" id="book-genre" placeholder="Fiction, Sci-Fi…" />
+          </div>
+          <div class="form-group">
+            <label for="book-pages">Pages</label>
+            <input type="number" id="book-pages" min="1" />
+          </div>
+          <div class="form-group">
+            <label for="book-status">Status</label>
+            <select id="book-status">
+              <option value="want_to_read">Want to Read</option>
+              <option value="reading">Currently Reading</option>
+              <option value="read">Finished</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="book-rating">Rating</label>
+            <select id="book-rating">
+              <option value="">–</option>
+              <option value="5">★★★★★</option>
+              <option value="4">★★★★☆</option>
+              <option value="3">★★★☆☆</option>
+              <option value="2">★★☆☆☆</option>
+              <option value="1">★☆☆☆☆</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="book-started">Date Started</label>
+            <input type="date" id="book-started" />
+          </div>
+          <div class="form-group">
+            <label for="book-finished">Date Finished</label>
+            <input type="date" id="book-finished" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="book-review">Review / Thoughts</label>
+          <textarea id="book-review" rows="5" placeholder="Write your personal review or reflections here…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="book-notes">Private Notes</label>
+          <textarea id="book-notes" rows="2" placeholder="Quotes, reminders, etc."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="book-cover">Cover Image URL (optional)</label>
+          <input type="url" id="book-cover" placeholder="https://…" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save">Save Book</button>
+        </div>
+        <p id="form-error" class="error-msg"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- VIEW BOOK MODAL (read-only details) -->
+  <div id="view-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content view-content">
+      <div class="modal-header">
+        <h2 id="view-title"></h2>
+        <button class="modal-close" id="view-close">&times;</button>
+      </div>
+      <div class="view-body" id="view-body">
+        <!-- filled by JS -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="view-edit">Edit</button>
+        <button class="btn btn-danger" id="view-delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
