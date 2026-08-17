@@ -3,195 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Book Tracker</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <title>BOOK-MARKD — Physical Media Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: {
+              950: '#0A0A0A',
+              900: '#111111',
+              800: '#1A1A1A',
+              700: '#242424',
+              600: '#2E2E2E',
+              500: '#3D3D3D',
+            },
+            paper: {
+              50: '#FAF7F2',
+              100: '#F5F0E8',
+              200: '#E8E2D6',
+              300: '#D4CBB8',
+            },
+            accent: {
+              DEFAULT: '#FF3D00',
+              hover: '#FF5722',
+              muted: '#FF3D0022',
+            },
+            muted: '#8A857D',
+          },
+          fontFamily: {
+            sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+            display: ['"Syne"', 'system-ui', 'sans-serif'],
+          },
+          transitionTimingFunction: {
+            spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+            'spring-soft': 'cubic-bezier(0.22, 1.2, 0.36, 1)',
+          },
+          boxShadow: {
+            hard: '4px 4px 0 0 #0A0A0A',
+            'hard-accent': '4px 4px 0 0 #FF3D00',
+            'hard-sm': '2px 2px 0 0 #0A0A0A',
+          },
+        },
+      },
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
-  <!-- AUTH SCREEN -->
-  <div id="auth-screen" class="screen">
-    <div class="auth-card">
-      <div class="logo">
-        <svg class="logo-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M96 32H360C393 32 424 42 424 96V416C424 456 400 480 360 480H96C78 480 64 466 64 448V64C64 46 78 32 96 32Z" stroke="currentColor" stroke-width="28" stroke-linejoin="round"/>
-          <path d="M112 32V480" stroke="currentColor" stroke-width="20"/>
-          <path d="M144 76H272" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-          <path d="M144 108H272" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-          <path d="M144 140H272" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-          <path d="M320 32H392V184L356 152L320 184V32Z" stroke="currentColor" stroke-width="24" stroke-linejoin="round"/>
-          <rect x="316" y="220" width="140" height="70" rx="18" stroke="currentColor" stroke-width="24" stroke-linejoin="round"/>
-          <path d="M350 220V290" stroke="currentColor" stroke-width="20"/>
-          <circle cx="418" cy="255" r="9" fill="currentColor"/>
-        </svg>
-        <h1>My Book Tracker</h1>
-        <p class="tagline">Your private reading journal</p>
+<body class="bg-charcoal-950 text-paper-100 font-sans antialiased min-h-screen">
+
+  <!-- ========== AUTH SCREEN ========== -->
+  <div id="auth-screen" class="screen min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+    <!-- Aceternity-inspired subtle grid + spotlight residual -->
+    <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: linear-gradient(#FF3D00 1px, transparent 1px), linear-gradient(90deg, #FF3D00 1px, transparent 1px); background-size: 48px 48px;"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent pointer-events-none"></div>
+
+    <div class="auth-card relative w-full max-w-md border-2 border-paper-100 bg-charcoal-900 p-8 md:p-10 shadow-hard">
+      <div class="mb-10">
+        <p class="font-mono text-xs tracking-[0.25em] text-accent uppercase mb-3">Physical Media Journal</p>
+        <h1 class="font-display text-4xl md:text-5xl font-extrabold tracking-tighter leading-none text-paper-50">
+          BOOK-<br>MARKD
+        </h1>
+        <p class="mt-4 text-muted text-sm leading-relaxed max-w-[280px]">
+          Track the books you hold. Rate. Reflect. Keep the spine intact.
+        </p>
       </div>
 
-      <div class="auth-tabs">
-        <button class="tab active" data-tab="login">Login</button>
-        <button class="tab" data-tab="register">Register</button>
+      <div class="auth-tabs flex border-2 border-paper-100 mb-8">
+        <button class="tab flex-1 py-3 text-sm font-medium tracking-wide uppercase transition-all duration-300 ease-spring active bg-paper-100 text-charcoal-950" data-tab="login">
+          Login
+        </button>
+        <button class="tab flex-1 py-3 text-sm font-medium tracking-wide uppercase transition-all duration-300 ease-spring text-paper-100 hover:bg-charcoal-800" data-tab="register">
+          Register
+        </button>
       </div>
 
-      <form id="login-form" class="auth-form">
+      <form id="login-form" class="auth-form space-y-5">
         <div class="form-group">
-          <label for="login-username">Username or Email</label>
-          <input type="text" id="login-username" required autocomplete="username" />
+          <label for="login-username" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Username or Email</label>
+          <input type="text" id="login-username" required autocomplete="username"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-4 py-3 text-paper-100 placeholder:text-muted/60 focus:outline-none focus:border-accent transition-colors duration-200" />
         </div>
         <div class="form-group">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" required autocomplete="current-password" />
+          <label for="login-password" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Password</label>
+          <input type="password" id="login-password" required autocomplete="current-password"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-4 py-3 text-paper-100 placeholder:text-muted/60 focus:outline-none focus:border-accent transition-colors duration-200" />
         </div>
-        <button type="submit" class="btn btn-primary">Sign In</button>
-        <p id="login-error" class="error-msg"></p>
+        <button type="submit" class="btn-primary w-full py-3.5 bg-accent text-charcoal-950 font-semibold tracking-wide uppercase text-sm border-2 border-accent hover:bg-accent-hover hover:shadow-hard-accent transition-all duration-300 ease-spring">
+          Sign In
+        </button>
+        <p id="login-error" class="error-msg text-center text-sm text-red-400 min-h-[1.25rem]"></p>
       </form>
 
-      <form id="register-form" class="auth-form hidden">
+      <form id="register-form" class="auth-form hidden space-y-5">
         <div class="form-group">
-          <label for="reg-username">Username</label>
-          <input type="text" id="reg-username" required minlength="3" autocomplete="username" />
+          <label for="reg-username" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Username</label>
+          <input type="text" id="reg-username" required minlength="3" autocomplete="username"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-4 py-3 text-paper-100 placeholder:text-muted/60 focus:outline-none focus:border-accent transition-colors duration-200" />
         </div>
         <div class="form-group">
-          <label for="reg-email">Email</label>
-          <input type="email" id="reg-email" required autocomplete="email" />
+          <label for="reg-email" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Email</label>
+          <input type="email" id="reg-email" required autocomplete="email"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-4 py-3 text-paper-100 placeholder:text-muted/60 focus:outline-none focus:border-accent transition-colors duration-200" />
         </div>
         <div class="form-group">
-          <label for="reg-password">Password</label>
-          <input type="password" id="reg-password" required minlength="6" autocomplete="new-password" />
+          <label for="reg-password" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Password</label>
+          <input type="password" id="reg-password" required minlength="6" autocomplete="new-password"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-4 py-3 text-paper-100 placeholder:text-muted/60 focus:outline-none focus:border-accent transition-colors duration-200" />
         </div>
-        <button type="submit" class="btn btn-primary">Create Account</button>
-        <p id="register-error" class="error-msg"></p>
+        <button type="submit" class="btn-primary w-full py-3.5 bg-accent text-charcoal-950 font-semibold tracking-wide uppercase text-sm border-2 border-accent hover:bg-accent-hover hover:shadow-hard-accent transition-all duration-300 ease-spring">
+          Create Account
+        </button>
+        <p id="register-error" class="error-msg text-center text-sm text-red-400 min-h-[1.25rem]"></p>
       </form>
     </div>
   </div>
 
-  <!-- MAIN APP -->
-  <div id="app-screen" class="screen hidden">
-    <header class="app-header">
-      <div class="header-left">
-        <svg class="logo-icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M96 32H360C393 32 424 42 424 96V416C424 456 400 480 360 480H96C78 480 64 466 64 448V64C64 46 78 32 96 32Z" stroke="currentColor" stroke-width="28" stroke-linejoin="round"/>
-          <path d="M112 32V480" stroke="currentColor" stroke-width="20"/>
-          <path d="M144 76H272" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-          <path d="M144 108H272" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-          <path d="M144 140H272" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-          <path d="M320 32H392V184L356 152L320 184V32Z" stroke="currentColor" stroke-width="24" stroke-linejoin="round"/>
-          <rect x="316" y="220" width="140" height="70" rx="18" stroke="currentColor" stroke-width="24" stroke-linejoin="round"/>
-          <path d="M350 220V290" stroke="currentColor" stroke-width="20"/>
-          <circle cx="418" cy="255" r="9" fill="currentColor"/>
-        </svg>
-        <h1>My Book Tracker</h1>
-      </div>
-      <div class="header-right">
-        <span id="welcome-user"></span>
-        <button id="btn-logout" class="btn btn-ghost">Logout</button>
+  <!-- ========== MAIN APP ========== -->
+  <div id="app-screen" class="screen hidden min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="app-header sticky top-0 z-50 border-b-2 border-paper-100 bg-charcoal-950">
+      <div class="max-w-[1400px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="font-display text-xl md:text-2xl font-extrabold tracking-tighter text-paper-50">BOOK-MARKD</span>
+          <span class="hidden sm:inline font-mono text-[10px] tracking-[0.2em] text-accent uppercase border border-accent px-2 py-0.5">Physical</span>
+        </div>
+        <div class="flex items-center gap-4 md:gap-6">
+          <span id="welcome-user" class="font-mono text-xs text-muted hidden sm:inline"></span>
+          <button id="btn-logout" class="btn-ghost font-mono text-xs uppercase tracking-widest border-2 border-charcoal-600 px-3 py-1.5 hover:border-paper-100 hover:text-paper-50 transition-all duration-300 ease-spring">
+            Logout
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- Stats -->
-    <section class="stats-bar" id="stats-bar">
-      <div class="stat-card">
-        <span class="stat-value" id="stat-total">0</span>
-        <span class="stat-label">Total</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="stat-read">0</span>
-        <span class="stat-label">Read</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="stat-reading">0</span>
-        <span class="stat-label">Reading</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="stat-want">0</span>
-        <span class="stat-label">Want to Read</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="stat-rating">–</span>
-        <span class="stat-label">Avg Rating</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="stat-pages">0</span>
-        <span class="stat-label">Pages</span>
+    <!-- Hero / Stats strip — asymmetric brutalist -->
+    <section class="border-b-2 border-charcoal-700">
+      <div class="max-w-[1400px] mx-auto px-5 md:px-8 py-8 md:py-10">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-0 border-2 border-paper-100">
+          <div class="stat-card border-r-2 border-b-2 md:border-b-0 border-paper-100 p-4 md:p-5">
+            <span class="stat-value block font-display text-3xl md:text-4xl font-bold tracking-tighter text-paper-50" id="stat-total">0</span>
+            <span class="stat-label font-mono text-[10px] uppercase tracking-widest text-muted mt-1">Total</span>
+          </div>
+          <div class="stat-card border-r-0 md:border-r-2 border-b-2 md:border-b-0 border-paper-100 p-4 md:p-5">
+            <span class="stat-value block font-display text-3xl md:text-4xl font-bold tracking-tighter text-accent" id="stat-read">0</span>
+            <span class="stat-label font-mono text-[10px] uppercase tracking-widest text-muted mt-1">Read</span>
+          </div>
+          <div class="stat-card border-r-2 border-b-2 lg:border-b-0 border-paper-100 p-4 md:p-5">
+            <span class="stat-value block font-display text-3xl md:text-4xl font-bold tracking-tighter text-paper-50" id="stat-reading">0</span>
+            <span class="stat-label font-mono text-[10px] uppercase tracking-widest text-muted mt-1">Reading</span>
+          </div>
+          <div class="stat-card border-r-0 md:border-r-2 border-b-2 lg:border-b-0 border-paper-100 p-4 md:p-5">
+            <span class="stat-value block font-display text-3xl md:text-4xl font-bold tracking-tighter text-paper-50" id="stat-want">0</span>
+            <span class="stat-label font-mono text-[10px] uppercase tracking-widest text-muted mt-1">Want</span>
+          </div>
+          <div class="stat-card border-r-2 border-paper-100 p-4 md:p-5">
+            <span class="stat-value block font-display text-3xl md:text-4xl font-bold tracking-tighter text-paper-50" id="stat-rating">–</span>
+            <span class="stat-label font-mono text-[10px] uppercase tracking-widest text-muted mt-1">Avg Rating</span>
+          </div>
+          <div class="stat-card p-4 md:p-5">
+            <span class="stat-value block font-display text-3xl md:text-4xl font-bold tracking-tighter text-paper-50" id="stat-pages">0</span>
+            <span class="stat-label font-mono text-[10px] uppercase tracking-widest text-muted mt-1">Pages</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Toolbar -->
-    <section class="toolbar">
-      <div class="search-box">
-        <input type="search" id="search-input" placeholder="Search title, author, genre, review…" />
+    <section class="max-w-[1400px] mx-auto w-full px-5 md:px-8 py-6">
+      <div class="toolbar flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+        <div class="search-box flex-1 max-w-xl">
+          <input type="search" id="search-input" placeholder="Search title, author, genre, review…"
+            class="w-full bg-charcoal-900 border-2 border-charcoal-600 px-4 py-3 text-sm text-paper-100 placeholder:text-muted/70 focus:outline-none focus:border-accent transition-colors duration-200" />
+        </div>
+        <div class="filters flex flex-wrap gap-3">
+          <select id="filter-status"
+            class="bg-charcoal-900 border-2 border-charcoal-600 px-3 py-3 text-sm text-paper-100 focus:outline-none focus:border-accent appearance-none cursor-pointer min-w-[140px]">
+            <option value="">All statuses</option>
+            <option value="want_to_read">Want to Read</option>
+            <option value="reading">Currently Reading</option>
+            <option value="read">Finished</option>
+          </select>
+          <select id="sort-by"
+            class="bg-charcoal-900 border-2 border-charcoal-600 px-3 py-3 text-sm text-paper-100 focus:outline-none focus:border-accent appearance-none cursor-pointer min-w-[150px]">
+            <option value="updated">Recently Updated</option>
+            <option value="title">Title A–Z</option>
+            <option value="author">Author A–Z</option>
+            <option value="rating">Highest Rating</option>
+            <option value="date_finished">Date Finished</option>
+          </select>
+          <button id="btn-add-book"
+            class="btn-primary px-5 py-3 bg-accent text-charcoal-950 font-semibold text-sm uppercase tracking-wide border-2 border-accent hover:bg-accent-hover hover:shadow-hard-sm transition-all duration-300 ease-spring whitespace-nowrap">
+            + Add Book
+          </button>
+        </div>
       </div>
-      <div class="filters">
-        <select id="filter-status">
-          <option value="">All statuses</option>
-          <option value="want_to_read">Want to Read</option>
-          <option value="reading">Currently Reading</option>
-          <option value="read">Finished</option>
-        </select>
-        <select id="sort-by">
-          <option value="updated">Recently Updated</option>
-          <option value="title">Title A–Z</option>
-          <option value="author">Author A–Z</option>
-          <option value="rating">Highest Rating</option>
-          <option value="date_finished">Date Finished</option>
-        </select>
-      </div>
-      <button id="btn-add-book" class="btn btn-primary">+ Add Book</button>
     </section>
 
-    <!-- Book list -->
-    <main class="book-list" id="book-list">
-      <!-- Cards injected by JS -->
-    </main>
+    <!-- Book list — asymmetric potential grid -->
+    <main class="flex-1 max-w-[1400px] mx-auto w-full px-5 md:px-8 pb-16">
+      <div id="book-list" class="book-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+        <!-- Cards injected by JS -->
+      </div>
 
-    <div id="empty-state" class="empty-state hidden">
-      <p>No books yet. Add your first one!</p>
-      <button class="btn btn-primary" onclick="document.getElementById('btn-add-book').click()">+ Add Book</button>
-    </div>
+      <div id="empty-state" class="empty-state hidden py-24 text-center">
+        <p class="font-display text-2xl md:text-3xl font-bold tracking-tight text-paper-50 mb-3">No books yet.</p>
+        <p class="text-muted text-sm mb-8 max-w-sm mx-auto">Your shelves are empty. Add the first physical copy you care about.</p>
+        <button class="btn-primary px-6 py-3.5 bg-accent text-charcoal-950 font-semibold text-sm uppercase tracking-wide border-2 border-accent hover:shadow-hard transition-all duration-300 ease-spring"
+          onclick="document.getElementById('btn-add-book').click()">
+          + Add Book
+        </button>
+      </div>
+    </main>
   </div>
 
-  <!-- ADD / EDIT MODAL -->
-  <div id="book-modal" class="modal hidden">
-    <div class="modal-backdrop"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modal-title">Add Book</h2>
-        <button class="modal-close" id="modal-close">&times;</button>
+  <!-- ========== ADD / EDIT MODAL ========== -->
+  <div id="book-modal" class="modal fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0 bg-charcoal-950/90 backdrop-blur-sm"></div>
+    <div class="modal-content relative w-full max-w-xl max-h-[92vh] overflow-y-auto bg-charcoal-900 border-2 border-paper-100 shadow-hard">
+      <div class="modal-header flex items-center justify-between px-6 py-5 border-b-2 border-charcoal-700">
+        <h2 id="modal-title" class="font-display text-xl font-bold tracking-tight">Add Book</h2>
+        <button class="modal-close text-2xl leading-none text-muted hover:text-paper-50 transition-colors" id="modal-close">&times;</button>
       </div>
-      <form id="book-form">
+
+      <form id="book-form" class="p-6 space-y-6">
         <input type="hidden" id="book-id" />
 
-        <div class="form-row">
-          <div class="form-group flex-2">
-            <label for="book-title">Title *</label>
-            <input type="text" id="book-title" required />
+        <!-- Open Library Search -->
+        <div class="ol-search-section border-2 border-charcoal-600 bg-charcoal-950 p-4">
+          <label class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-2">Search Open Library</label>
+          <div class="ol-search-row flex gap-2">
+            <input type="text" id="ol-search-input" placeholder="Title or ISBN…"
+              class="flex-1 bg-charcoal-900 border-2 border-charcoal-600 px-3 py-2.5 text-sm text-paper-100 focus:outline-none focus:border-accent" />
+            <button type="button" id="ol-search-btn"
+              class="px-4 py-2.5 bg-paper-100 text-charcoal-950 font-medium text-sm uppercase tracking-wide border-2 border-paper-100 hover:bg-accent hover:border-accent hover:text-charcoal-950 transition-all duration-300 ease-spring">
+              Search
+            </button>
           </div>
-          <div class="form-group flex-2">
-            <label for="book-author">Author *</label>
-            <input type="text" id="book-author" required />
-          </div>
+          <div id="ol-results" class="ol-results hidden mt-3 max-h-52 overflow-y-auto space-y-1.5"></div>
+          <p id="ol-status" class="ol-status font-mono text-xs text-muted mt-2 min-h-[1.2em]"></p>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="book-genre">Genre</label>
-            <input type="text" id="book-genre" placeholder="Fiction, Sci-Fi…" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group sm:col-span-2">
+            <label for="book-title" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Title *</label>
+            <input type="text" id="book-title" required
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
+          </div>
+          <div class="form-group sm:col-span-2">
+            <label for="book-author" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Author *</label>
+            <input type="text" id="book-author" required
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
           </div>
           <div class="form-group">
-            <label for="book-pages">Pages</label>
-            <input type="number" id="book-pages" min="1" />
+            <label for="book-genre" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Genre</label>
+            <input type="text" id="book-genre" placeholder="Fiction, Sci-Fi…"
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
           </div>
           <div class="form-group">
-            <label for="book-status">Status</label>
-            <select id="book-status">
+            <label for="book-pages" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Pages</label>
+            <input type="number" id="book-pages" min="1"
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
+          </div>
+          <div class="form-group">
+            <label for="book-status" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Status</label>
+            <select id="book-status"
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent appearance-none">
               <option value="want_to_read">Want to Read</option>
               <option value="reading">Currently Reading</option>
               <option value="read">Finished</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="book-rating">Rating</label>
-            <select id="book-rating">
+            <label for="book-rating" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Rating</label>
+            <select id="book-rating"
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent appearance-none">
               <option value="">–</option>
               <option value="5">★★★★★</option>
               <option value="4">★★★★☆</option>
@@ -200,57 +290,69 @@
               <option value="1">★☆☆☆☆</option>
             </select>
           </div>
-        </div>
-
-        <div class="form-row">
           <div class="form-group">
-            <label for="book-started">Date Started</label>
-            <input type="date" id="book-started" />
+            <label for="book-started" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Date Started</label>
+            <input type="date" id="book-started"
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
           </div>
           <div class="form-group">
-            <label for="book-finished">Date Finished</label>
-            <input type="date" id="book-finished" />
+            <label for="book-finished" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Date Finished</label>
+            <input type="date" id="book-finished"
+              class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="book-review">Review / Thoughts</label>
-          <textarea id="book-review" rows="5" placeholder="Write your personal review or reflections here…"></textarea>
+          <label for="book-review" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Review / Thoughts</label>
+          <textarea id="book-review" rows="4" placeholder="Write your personal review or reflections…"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent resize-y min-h-[100px]"></textarea>
         </div>
-
         <div class="form-group">
-          <label for="book-notes">Private Notes</label>
-          <textarea id="book-notes" rows="2" placeholder="Quotes, reminders, etc."></textarea>
+          <label for="book-notes" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Private Notes</label>
+          <textarea id="book-notes" rows="2" placeholder="Quotes, reminders…"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent resize-y"></textarea>
         </div>
-
         <div class="form-group">
-          <label for="book-cover">Cover Image URL (optional)</label>
-          <input type="url" id="book-cover" placeholder="https://…" />
+          <label for="book-cover" class="block font-mono text-[11px] uppercase tracking-widest text-muted mb-1.5">Cover Image URL</label>
+          <input type="url" id="book-cover" placeholder="https://…"
+            class="w-full bg-charcoal-950 border-2 border-charcoal-600 px-3 py-2.5 text-paper-100 focus:outline-none focus:border-accent" />
         </div>
 
-        <div class="modal-actions">
-          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="btn-save">Save Book</button>
+        <div class="modal-actions flex gap-3 justify-end pt-2">
+          <button type="button" id="btn-cancel"
+            class="px-5 py-2.5 border-2 border-charcoal-600 text-muted font-medium text-sm uppercase tracking-wide hover:border-paper-100 hover:text-paper-50 transition-all duration-300 ease-spring">
+            Cancel
+          </button>
+          <button type="submit" id="btn-save"
+            class="px-5 py-2.5 bg-accent text-charcoal-950 font-semibold text-sm uppercase tracking-wide border-2 border-accent hover:bg-accent-hover hover:shadow-hard-sm transition-all duration-300 ease-spring">
+            Save Book
+          </button>
         </div>
-        <p id="form-error" class="error-msg"></p>
+        <p id="form-error" class="error-msg text-center text-sm text-red-400 min-h-[1.25rem]"></p>
       </form>
     </div>
   </div>
 
-  <!-- VIEW BOOK MODAL (read-only details) -->
-  <div id="view-modal" class="modal hidden">
-    <div class="modal-backdrop"></div>
-    <div class="modal-content view-content">
-      <div class="modal-header">
-        <h2 id="view-title"></h2>
-        <button class="modal-close" id="view-close">&times;</button>
+  <!-- ========== VIEW BOOK MODAL ========== -->
+  <div id="view-modal" class="modal fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0 bg-charcoal-950/90 backdrop-blur-sm"></div>
+    <div class="modal-content view-content relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-charcoal-900 border-2 border-paper-100 shadow-hard">
+      <div class="modal-header flex items-center justify-between px-6 py-5 border-b-2 border-charcoal-700">
+        <h2 id="view-title" class="font-display text-xl font-bold tracking-tight pr-4"></h2>
+        <button class="modal-close text-2xl leading-none text-muted hover:text-paper-50 transition-colors" id="view-close">&times;</button>
       </div>
-      <div class="view-body" id="view-body">
+      <div class="view-body px-6 py-5" id="view-body">
         <!-- filled by JS -->
       </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost" id="view-edit">Edit</button>
-        <button class="btn btn-danger" id="view-delete">Delete</button>
+      <div class="modal-actions flex gap-3 justify-end px-6 pb-6">
+        <button id="view-edit"
+          class="px-5 py-2.5 border-2 border-charcoal-600 text-paper-100 font-medium text-sm uppercase tracking-wide hover:border-accent hover:text-accent transition-all duration-300 ease-spring">
+          Edit
+        </button>
+        <button id="view-delete"
+          class="px-5 py-2.5 border-2 border-red-500/70 text-red-400 font-medium text-sm uppercase tracking-wide hover:bg-red-500 hover:text-charcoal-950 hover:border-red-500 transition-all duration-300 ease-spring">
+          Delete
+        </button>
       </div>
     </div>
   </div>

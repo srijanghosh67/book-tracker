@@ -1,4 +1,4 @@
-// Personal Book Tracker - Frontend
+// BOOK-MARKD — Frontend
 const API = '';
 
 let currentUser = null;
@@ -22,8 +22,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Tabs
   document.querySelectorAll('.auth-tabs .tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      document.querySelectorAll('.auth-tabs .tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+      document.querySelectorAll('.auth-tabs .tab').forEach(t => {
+        t.classList.remove('active', 'bg-paper-100', 'text-charcoal-950');
+        t.classList.add('text-paper-100');
+      });
+      tab.classList.add('active', 'bg-paper-100', 'text-charcoal-950');
+      tab.classList.remove('text-paper-100');
       const isLogin = tab.dataset.tab === 'login';
       loginForm.classList.toggle('hidden', !isLogin);
       registerForm.classList.toggle('hidden', isLogin);
@@ -51,6 +55,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('search-input').addEventListener('input', debounce(loadBooks, 300));
   document.getElementById('filter-status').addEventListener('change', loadBooks);
   document.getElementById('sort-by').addEventListener('change', loadBooks);
+
+  // Open Library search
+  document.getElementById('ol-search-btn').addEventListener('click', searchOpenLibrary);
+  document.getElementById('ol-search-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchOpenLibrary();
+    }
+  });
 
   // Check session
   await checkAuth();
@@ -206,7 +219,7 @@ function renderBooks(books) {
     }[book.status] || book.status;
 
     const coverHtml = book.cover_url
-      ? `<img src="${escapeHtml(book.cover_url)}" alt="" onerror="this.parentElement.innerHTML='📖'" />`
+      ? `<img src="${escapeHtml(book.cover_url)}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='📖'" />`
       : '📖';
 
     card.innerHTML = `
@@ -245,6 +258,13 @@ function openBookModal(id = null) {
   document.getElementById('form-error').textContent = '';
   bookForm.reset();
   document.getElementById('book-id').value = '';
+
+  // Clear Open Library search UI
+  document.getElementById('ol-search-input').value = '';
+  document.getElementById('ol-results').classList.add('hidden');
+  document.getElementById('ol-results').innerHTML = '';
+  document.getElementById('ol-status').textContent = '';
+  document.getElementById('ol-status').classList.remove('error');
 
   if (id) {
     document.getElementById('modal-title').textContent = 'Edit Book';
@@ -335,7 +355,7 @@ async function openViewModal(id) {
       : 'Not rated';
 
     let html = `
-      <p style="color:var(--text-muted);margin-bottom:0.75rem;">by ${escapeHtml(book.author)}</p>
+      <p class="text-muted text-sm mb-4">by ${escapeHtml(book.author)}</p>
       <dl class="view-meta">
         <dt>Status</dt><dd>${statusLabel}</dd>
         <dt>Rating</dt><dd class="view-rating">${stars}</dd>
@@ -346,11 +366,11 @@ async function openViewModal(id) {
       </dl>
     `;
     if (book.review) {
-      html += `<h4 style="margin-top:1rem;margin-bottom:0.4rem;font-size:0.85rem;color:var(--text-muted);">Review</h4>
+      html += `<h4 class="font-mono text-[11px] uppercase tracking-widest text-muted mt-5 mb-2">Review</h4>
                <div class="view-review">${escapeHtml(book.review)}</div>`;
     }
     if (book.notes) {
-      html += `<h4 style="margin-top:1rem;margin-bottom:0.4rem;font-size:0.85rem;color:var(--text-muted);">Notes</h4>
+      html += `<h4 class="font-mono text-[11px] uppercase tracking-widest text-muted mt-5 mb-2">Notes</h4>
                <div class="view-review">${escapeHtml(book.notes)}</div>`;
     }
 
@@ -381,5 +401,89 @@ async function handleDeleteFromView() {
     loadStats();
   } catch (e) {
     alert(e.message);
+  }
+}
+
+// ========== OPEN LIBRARY API ==========
+async function searchOpenLibrary() {
+  const input = document.getElementById('ol-search-input');
+  const query = input.value.trim();
+  const resultsEl = document.getElementById('ol-results');
+  const statusEl = document.getElementById('ol-status');
+
+  if (!query) {
+    statusEl.textContent = 'Please type a book title or ISBN';
+    statusEl.classList.add('error');
+    return;
+  }
+
+  statusEl.textContent = 'Searching Open Library…';
+  statusEl.classList.remove('error');
+  resultsEl.classList.add('hidden');
+  resultsEl.innerHTML = '';
+
+  try {
+    const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=8&fields=key,title,author_name,first_publish_year,cover_i,number_of_pages_median,subject,isbn`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Search failed');
+
+    const data = await res.json();
+    const docs = data.docs || [];
+
+    if (docs.length === 0) {
+      statusEl.textContent = 'No books found. Try a different title or ISBN.';
+      return;
+    }
+
+    statusEl.textContent = `Found ${docs.length} result${docs.length > 1 ? 's' : ''}. Click one to auto-fill.`;
+    resultsEl.classList.remove('hidden');
+
+    docs.forEach(doc => {
+      const item = document.createElement('div');
+      item.className = 'ol-result-item';
+
+      const coverId = doc.cover_i;
+      const coverUrl = coverId
+        ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+        : '';
+
+      const authors = (doc.author_name || []).slice(0, 2).join(', ') || 'Unknown author';
+      const year = doc.first_publish_year || '';
+      const pages = doc.number_of_pages_median || '';
+      const subjects = (doc.subject || []).slice(0, 3).join(', ');
+
+      item.innerHTML = `
+        ${coverUrl
+          ? `<img src="${coverUrl}" alt="" loading="lazy" onerror="this.style.display='none'" />`
+          : `<div style="width:40px;height:60px;background:#1A1A1A;border:1px solid #2E2E2E;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📖</div>`
+        }
+        <div class="ol-result-info min-w-0 flex-1">
+          <div class="ol-result-title">${escapeHtml(doc.title || 'Untitled')}</div>
+          <div class="ol-result-author">${escapeHtml(authors)}</div>
+          ${year ? `<div class="ol-result-year">${year}${pages ? ' · ' + pages + ' pages' : ''}</div>` : ''}
+        </div>
+      `;
+
+      item.addEventListener('click', () => {
+        document.getElementById('book-title').value = doc.title || '';
+        document.getElementById('book-author').value = authors !== 'Unknown author' ? authors : '';
+        document.getElementById('book-pages').value = pages || '';
+        document.getElementById('book-genre').value = subjects || '';
+        document.getElementById('book-cover').value = coverUrl
+          ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
+          : '';
+
+        resultsEl.classList.add('hidden');
+        resultsEl.innerHTML = '';
+        statusEl.textContent = '✓ Book details filled. You can still edit them.';
+        input.value = '';
+      });
+
+      resultsEl.appendChild(item);
+    });
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = 'Could not reach Open Library. Check your internet connection.';
+    statusEl.classList.add('error');
   }
 }
